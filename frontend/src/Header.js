@@ -2,7 +2,7 @@ function Header() {
 	return (
 		<nav className="navbar navbar-expand-lg text-bg-light">
 			<div className="container-fluid">
-				<a className="navbar-brand ml-1 text-bg-light" href="#">
+				<a className="navbar-brand ml-1 text-bg-light" href="/">
 					<img
 						src="https://taskmasterstore.com/cdn/shop/files/STAMP-with-Alpha_180x180.png"
 						alt="taskmaster logo"
@@ -21,7 +21,7 @@ function Header() {
 							<a
 								className="nav-link active ml-1 pb-0"
 								aria-current="page"
-								href="#"
+								href="/"
 							>
 								Home
 							</a>
