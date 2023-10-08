@@ -54,6 +54,8 @@ function App() {
     const sort = (header) => {
         const allArrows = $('.sortHeader i');
         const headerArrow = header.find('i');
+
+        // TODO: Implement sorting function
         
         // if this header already has an arrow, toggle it to flip it
         if (headerArrow.hasClass('bi-arrow-down') || headerArrow.hasClass('bi-arrow-up'))
