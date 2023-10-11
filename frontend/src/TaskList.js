@@ -14,9 +14,10 @@ const TaskList = () => {
     };
 
     const [tasks, setTasks] = useState([ exampleTask ]);
+    const lastTask = tasks.toSorted((a, b) => { return a.id - b.id }).pop()
     const [modalTask, setModalTask] = useState({
         // set id to next id in list incrementally
-        "id": tasks.toSorted((a, b) => { return a.id - b.id }).pop().id + 1,
+        "id": lastTask !== undefined && lastTask !== null ? lastTask.id + 1 : 0,
         "title": '',
         "dueDate": new Date(),
         "description": '',
