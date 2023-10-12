@@ -14,15 +14,6 @@ const TaskList = () => {
     };
 
     const [tasks, setTasks] = useState([ exampleTask ]);
-    const lastTask = tasks.toSorted((a, b) => { return a.id - b.id }).pop()
-    const [modalTask, setModalTask] = useState({
-        // set id to next id in list incrementally
-        "id": lastTask !== undefined && lastTask !== null ? lastTask.id + 1 : 0,
-        "title": '',
-        "dueDate": new Date(),
-        "description": '',
-        "isComplete": false
-    });
 
     const addTask = (task) => {
         const taskExists = (element, index, array) => {
@@ -54,8 +45,9 @@ const TaskList = () => {
         const newTasks = tasks.map(task => {
             if (task.id === taskId)
                 return { ...task, isComplete: !task.isComplete };
-            
-            return task;
+            else {
+                return task;
+            }
         });
 
         setTasks(newTasks);
@@ -86,7 +78,7 @@ const TaskList = () => {
         <div className="card m-1">
             <h1 className="card-title p-3">Tasks</h1>
             <div className="card-body">
-                <button type="button" className="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#taskModal" data-bs-action="Create">Create New <i className="bi bi-plus"></i></button>
+                <button type="button" className="btn btn-primary col-md-2" data-bs-toggle="modal" data-bs-target="#createTaskModal">Create New <i className="bi bi-plus"></i></button>
                 <table className="table mt-2">
                     <thead>
                         <tr>
@@ -99,21 +91,18 @@ const TaskList = () => {
                     <tbody>
                         { tasks.map(task => (
                             <Task 
-                                key={'task' + task.id} 
-                                id={task.id}
-                                title={task.title} 
-                                dueDate={task.dueDate} 
-                                description={task.description} 
+                                key={'task' + task.id}
+                                taskProp={task}
                                 status={ task.isComplete ? 'Complete' : 'Incomplete' } 
-                                onEditHandler={setModalTask}
+                                onSaveHandler={addTask}
                                 onCompleteHandler={completeTask} 
                                 onDeleteHandler={deleteTask} 
                             />
                         ))}
                     </tbody>
                 </table>
+                <TaskModal modelId={'createTaskModal'} action={'Create'} task={{ ...exampleTask, "id": tasks.length }} onSaveHandler={addTask} />
             </div>
-            <TaskModal {...modalTask} onSaveHandler={addTask} />
         </div>
     );
 }
