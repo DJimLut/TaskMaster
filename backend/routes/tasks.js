@@ -1,64 +1,75 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Task = require('../models/task');
+const Task = require("../models/task");
 
 // Create a new task
-router.post('/tasks', async (req, res) => {
-  try {
-    const task = new Task(req.body);
-    await task.save();
-    res.status(201).json(task);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+router.post("/tasks", async (req, res) => {
+	const task = new Task(req.body);
+	await task
+		.save()
+		.then(function () {
+			res.status(201).json(task);
+		})
+		.catch(function (error) {
+			res.status(400).json({ error: error.message });
+		});
 });
 
 // Get all tasks
-router.get('/tasks', async (req, res) => {
-  try {
-    const tasks = await Task.find();
-    res.status(200).json(tasks);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+router.get("/tasks", async (req, res) => {
+	await Task.find()
+		.then(function (tasks) {
+			res.status(200).json(tasks);
+		})
+		.catch(function (error) {
+			res.status(500).json({ error: error.message });
+		});
 });
 
 // Update a task by ID
-router.patch('/tasks/:id', async (req, res) => {
-  const updates = Object.keys(req.body);
-  const allowedUpdates = ['title', 'description', 'completed'];
-  const isValidOperation = updates.every(update => allowedUpdates.includes(update));
+router.patch("/tasks/:id", async (req, res) => {
+	const id = Number(req.params.id);
+	const updates = Object.keys(req.body);
+	const allowedUpdates = ["title", "description", "dueDate", "isComplete"];
+	const isValidOperation = updates.every((update) =>
+		allowedUpdates.includes(update)
+	);
 
-  if (!isValidOperation) {
-    return res.status(400).json({ error: 'Invalid updates!' });
-  }
+	if (!isValidOperation) {
+		return res.status(400).json({ error: "Invalid updates!" });
+	}
 
-  try {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+	if (isNaN(id)) {
+		return res.status(400).json({ error: "Invalid Id!" });
+	}
 
-    if (!task) {
-      return res.status(404).json();
-    }
-
-    res.status(200).json(task);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+	await Task.findByIdAndUpdate(req.params.id, req.body, {
+		new: true,
+		runValidators: true,
+	})
+		.then(function (task) {
+			if (!task) {
+				return res.status(404).json();
+			}
+			res.status(200).json(task);
+		})
+		.catch(function (error) {
+			res.status(400).json({ error: error.message });
+		});
 });
 
 // Delete a task by ID
-router.delete('/tasks/:id', async (req, res) => {
-  try {
-    const task = await Task.findByIdAndDelete(req.params.id);
-
-    if (!task) {
-      return res.status(404).json();
-    }
-
-    res.status(200).json(task);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+router.delete("/tasks/:id", async (req, res) => {
+	await Task.findByIdAndDelete(req.params.id)
+		.then(function (task) {
+			if (!task) {
+				return res.status(404).json();
+			}
+			res.status(200).json(task);
+		})
+		.catch(function (error) {
+			res.status(500).json({ error: error.message });
+		});
 });
 
 module.exports = router;
