@@ -3,7 +3,7 @@ const router = express.Router();
 const Task = require("../models/task");
 
 // Create a new task
-router.post("/tasks", async (req, res) => {
+router.post("/v1/tasks", async (req, res) => {
 	const task = new Task(req.body);
 	await task
 		.save()
@@ -16,7 +16,7 @@ router.post("/tasks", async (req, res) => {
 });
 
 // Get all tasks
-router.get("/tasks", async (req, res) => {
+router.get("/v1/tasks", async (req, res) => {
 	await Task.find()
 		.then(function (tasks) {
 			res.status(200).json(tasks);
@@ -27,7 +27,7 @@ router.get("/tasks", async (req, res) => {
 });
 
 // Update a task by ID
-router.patch("/tasks/:id", async (req, res) => {
+router.patch("/v1/tasks/:id", async (req, res) => {
 	const id = Number(req.params.id);
 	const updates = Object.keys(req.body);
 	const allowedUpdates = ["title", "description", "dueDate", "isComplete"];
@@ -59,7 +59,7 @@ router.patch("/tasks/:id", async (req, res) => {
 });
 
 // Delete a task by ID
-router.delete("/tasks/:id", async (req, res) => {
+router.delete("/v1/tasks/:id", async (req, res) => {
 	await Task.findByIdAndDelete(req.params.id)
 		.then(function (task) {
 			if (!task) {
