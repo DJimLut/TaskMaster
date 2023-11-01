@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Task = require("../models/task");
 
+// #region v1
+
 // Create a new task
 router.post("/v1/tasks", async (req, res) => {
 	const task = new Task(req.body);
@@ -71,5 +73,6 @@ router.delete("/v1/tasks/:id", async (req, res) => {
 			res.status(500).json({ error: error.message });
 		});
 });
+// #endregion
 
 module.exports = router;
