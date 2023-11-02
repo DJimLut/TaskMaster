@@ -82,6 +82,39 @@ paths:
       tags:
         - tasks
   /tasks/{taskId}:
+    get:
+      summary: Find a Task
+      description: Find a Task
+      operationId: findTask
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 1
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Fetch Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - tasks
     patch:
       summary: Update a task
       description: Update a task
@@ -183,14 +216,6 @@ components:
       xml:
         name: error
   securitySchemes:
-    petstore_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
-          scopes:
-            write:pets: modify pets in your account
-            read:pets: read your pets
     x-api-key:
       type: apiKey
       name: x-api-key
