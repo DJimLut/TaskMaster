@@ -28,6 +28,25 @@ router.get("/v1/tasks", async (req, res) => {
 		});
 });
 
+router.get("/v1/tasks/:id", async (req, res) => {
+	const id = Number(req.params.id);
+	if (isNaN(id)) {
+		res.status(400).json({ error: "Invalid id" });
+	} else {
+		await Task.findById(req.params.id)
+			.then(function (task) {
+				if (!task) {
+					res.status(404).json({ error: "Task not found." });
+				} else {
+					res.status(200).json(task);
+				}
+			})
+			.catch(function (error) {
+				res.status(400).json({ error: error.message });
+			});
+	}
+});
+
 // Update a task by ID
 router.patch("/v1/tasks/:id", async (req, res) => {
 	const id = Number(req.params.id);
