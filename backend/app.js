@@ -9,7 +9,7 @@ const port = 3000; // You can choose any available port
 
 // Connect to MongoDB
 mongoose.connect(
-	"mongodb+srv://service:serviceAccountPass@taskmastercluster.ct5wrv1.mongodb.net/?retryWrites=true&w=majority",
+	"mongodb+srv://service:srvAccPass@taskmastercluster.ct5wrv1.mongodb.net/?retryWrites=true&w=majority",
 	{
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
