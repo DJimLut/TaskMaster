@@ -5,15 +5,22 @@ import React, { useState } from "react";
 import $ from "jquery";
 
 const TaskList = () => {
-	const exampleTask = {
-		id: 0,
-		title: "Example",
-		dueDate: new Date(),
-		description: "This is an example task",
-		isComplete: false,
-	};
+	const newTask = {};
+	const [tasks, setTasks] = useState([]);
 
-	const [tasks, setTasks] = useState([exampleTask]);
+	$.get("/api/v1/tasks")
+		.then(function (tasks) {
+			if (tasks) {
+				setTasks(tasks);
+			} else {
+				console.log("No tasks returned from server");
+				alert("No Tasks returned from server");
+			}
+		})
+		.catch(function (error) {
+			console.error(`An error occured fetching tasks: ${error.message}`);
+			alert(`An error occured fetching tasks: ${error.message}`);
+		});
 
 	const addTask = (task) => {
 		const taskExists = (element, index, array) => {
@@ -25,37 +32,119 @@ const TaskList = () => {
 			editTask(task);
 		else {
 			// add the new task
-			tasks.push(task);
+			$.post("/api/v1/tasks", task)
+				.then(function (createdTask) {
+					if (createdTask) {
+						tasks.push(createdTask);
+					} else {
+						console.info("Server returned null when creating task");
+						alert("Server returned null when creating task.");
+					}
+				})
+				.catch(function (error) {
+					console.error(`Failed creating task: ${error.message}`);
+					alert(`Failed creating task: ${error.message}`);
+				});
 		}
 	};
 
-	const editTask = (editedTask) => {
-		const newTasks = tasks.map((task) => {
-			if (task.id === editedTask.id) return editedTask;
-			else {
-				return task;
-			}
-		});
+	const editTask = (taskToEdit) => {
+		$.patch(`/api/v1/tasks/${taskToEdit.id}`, taskToEdit)
+			.then(function (editedTask) {
+				if (editedTask) {
+					const newTasks = tasks.map((task) => {
+						if (task.id === editedTask.id) return editedTask;
+						else {
+							return task;
+						}
+					});
 
-		setTasks(newTasks);
+					setTasks(newTasks);
+				} else {
+					console.info("Server returned null when editing task.");
+					alert("Failed editing task.");
+				}
+			})
+			.catch(function (error) {
+				console.error(
+					`Error occurred when editing task: ${error.message}`
+				);
+				alert(`Error occurred editing task: ${error.message}`);
+			});
 	};
 
 	const completeTask = (taskId) => {
-		const newTasks = tasks.map((task) => {
-			if (task.id === taskId) {
-				return { ...task, isComplete: !task.isComplete };
-			} else {
-				return task;
-			}
-		});
+		$.get(`/api/v1/tasks/${taskId}`)
+			.then(function (task) {
+				if (task) {
+					$.patch(`/api/v1/tasks/${taskId}`, {
+						isComplete: !task.isComplete,
+					})
+						.then(function (task) {
+							if (task) {
+								const newTasks = tasks.map((task) => {
+									if (task.id === taskId) {
+										return {
+											...task,
+											isComplete: !task.isComplete,
+										};
+									} else {
+										return task;
+									}
+								});
 
-		setTasks(newTasks);
+								setTasks(newTasks);
+							} else {
+								console.info(
+									"Server returned null when completing task."
+								);
+								alert("Failed completing task.");
+							}
+						})
+						.catch(function (error) {
+							console.error(
+								`Error occurred when completing task: ${error.message}`
+							);
+							alert(
+								`Error occurred completing task: ${error.message}`
+							);
+						});
+				} else {
+					console.info(
+						"Server returned null when fetching task for completion."
+					);
+					alert("Failed completing task.");
+				}
+			})
+			.catch(function (error) {
+				console.error(
+					`Error occurred when fetching task for completion: ${error.message}`
+				);
+				alert(
+					`Error occurred fetching task for completion: ${error.message}`
+				);
+			});
 	};
 
 	const deleteTask = (taskId) => {
-		const newTasks = tasks.filter((task) => task.id !== taskId);
+		$.ajax({
+			method: "DELETE",
+			url: `/api/v1/tasks/${taskId}`,
+		})
+			.then(function (task) {
+				if (task) {
+					const newTasks = tasks.filter((task) => task.id !== taskId);
 
-		setTasks(newTasks);
+					setTasks(newTasks);
+				} else {
+					console.info("Server returned null when deleting task");
+					alert("Failed deleting task");
+				}
+			})
+			.catch(function (error) {
+				console.error(`Error occured deleting task: ${error.message}`);
+				alert(`Error occured deleting task: ${error.message}`);
+			});
 	};
 
 	const sort = (header) => {
@@ -141,7 +230,7 @@ const TaskList = () => {
 				<TaskModal
 					modalId={"createTaskModal"}
 					action={"Create"}
-					task={{ ...exampleTask, id: tasks.length }}
+					task={{ ...newTask, id: tasks.length }}
 					onSaveHandler={addTask}
 				/>
 			</div>
