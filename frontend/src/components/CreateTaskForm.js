@@ -1,70 +1,71 @@
-import React, { useState } from "react";
-
 const formatDate = (date) => {
 	return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
 		.toISOString()
 		.slice(0, -5);
 };
 
-const TaskForm = ({ title, description, dueDate, isComplete }) => {
+const CreateTaskForm = ({ task }) => {
 	return (
 		<form className="taskForm">
 			<div className="form-group">
-				<label htmlFor="taskTitle" className="form-label">
+				<label htmlFor="createTaskTitle" className="form-label">
 					Title
 				</label>
 				<input
-					id="taskTitle"
+					id="createTaskTitle"
 					name="title"
 					type="text"
-					value={title.getter}
+					value={task.title}
 					className="form-control"
 					onChange={(e) => {
-						title.setter(e.target.value);
+						task.title = e.target.value;
 					}}
 				/>
 			</div>
 			<div className="form-group">
-				<label htmlFor="taskDescription" className="form-label">
+				<label htmlFor="createTaskDescription" className="form-label">
 					Description
 				</label>
 				<textarea
-					id="taskDescripton"
+					id="createTaskDescripton"
 					name="description"
-					value={description.getter}
+					value={task.description}
 					className="form-control"
 					onChange={(e) => {
-						description.setter(e.target.value);
+						task.description = e.target.value;
 					}}
 				></textarea>
 			</div>
 			<div className="form-group">
-				<label htmlFor="taskDueDate" className="form-label">
+				<label htmlFor="createTaskDueDate" className="form-label">
 					Due
 				</label>
 				<input
-					id="taskDueDate"
+					id="createTaskDueDate"
 					name="dueDate"
 					type="datetime-local"
-					value={formatDate(dueDate.getter)}
+					value={formatDate(task.dueDate)}
 					className="form-control"
 					onChange={(e) => {
-						dueDate.setter(new Date(e.target.value));
+						task.dueDate = new Date(e.target.value);
 					}}
 				/>
 			</div>
 			<div className="form-check">
 				<input
-					id="taskIsComplete"
+					id="createTaskIsComplete"
 					name="isComplete"
 					type="checkbox"
-					checked={isComplete.getter}
+					checked={task.isComplete}
 					className="form-check-input"
 					onChange={(e) => {
-						isComplete.setter(e.target.checked);
+						task.isComplete = e.target.checked;
 					}}
 				/>
-				<label htmlFor="taskIsComplete" className="form-check-label">
+				<label
+					htmlFor="createTaskIsComplete"
+					className="form-check-label"
+				>
 					Complete
 				</label>
 			</div>
@@ -72,4 +73,4 @@ const TaskForm = ({ title, description, dueDate, isComplete }) => {
 	);
 };
 
-export default TaskForm;
+export default CreateTaskForm;

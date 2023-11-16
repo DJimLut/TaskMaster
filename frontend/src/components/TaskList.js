@@ -1,41 +1,60 @@
 import Task from "./Task.js";
-import TaskModal from "./TaskModal.js";
+import CreateTaskModal from "./CreateTaskModal.js";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import $ from "jquery";
 
 const TaskList = () => {
-	const newTask = {};
-	const [tasks, setTasks] = useState([]);
+	const [tasks, setTasks] = useState([
+		{
+			id: 0,
+			title: "",
+			description: "",
+			dueDate: new Date(Date.now()),
+			isComplete: false,
+		},
+	]);
+	const [newTask, setNewTask] = useState({
+		id: tasks.length,
+		title: "",
+		description: "",
+		dueDate: new Date(Date.now()),
+		isComplete: false,
+	});
+	// useEffect(() => {
+	// 	$.get("/api/v1/tasks")
+	// 		.then(function (tasks) {
+	// 			if (tasks) {
+	// 				setTasks(tasks);
+	// 			} else {
+	// 				console.log("No tasks returned from server");
+	// 				alert("No Tasks returned from server");
+	// 			}
+	// 		})
+	// 		.catch(function (error) {
+	// 			console.error(
+	// 				`An error occured fetching tasks: ${error.message}`
+	// 			);
+	// 			alert(`An error occured fetching tasks: ${error.message}`);
+	// 		});
+	// }, []);
 
-	$.get("/api/v1/tasks")
-		.then(function (tasks) {
-			if (tasks) {
-				setTasks(tasks);
-			} else {
-				console.log("No tasks returned from server");
-				alert("No Tasks returned from server");
-			}
-		})
-		.catch(function (error) {
-			console.error(`An error occured fetching tasks: ${error.message}`);
-			alert(`An error occured fetching tasks: ${error.message}`);
-		});
-
-	const addTask = (task) => {
+	// #region functions
+	const addTask = () => {
 		const taskExists = (element, index, array) => {
-			return element.id === task.id;
+			return element.id === newTask.id;
 		};
 
 		if (tasks.some(taskExists))
 			// task is already in tasks
-			editTask(task);
+			editTask(newTask);
 		else {
 			// add the new task
-			$.post("/api/v1/tasks", task)
+			$.post("/api/v1/tasks", newTask)
 				.then(function (createdTask) {
 					if (createdTask) {
 						tasks.push(createdTask);
+						setNewTask({});
 					} else {
 						console.info("Server returned null when creating task");
 						alert("Server returned null when creating task.");
@@ -77,8 +96,12 @@ const TaskList = () => {
 		$.get(`/api/v1/tasks/${taskId}`)
 			.then(function (task) {
 				if (task) {
-					$.patch(`/api/v1/tasks/${taskId}`, {
-						isComplete: !task.isComplete,
+					$.ajax({
+						method: "PATCH",
+						url: `/api/v1/tasks/${taskId}`,
+						data: {
+							isComplete: !task.isComplete,
+						},
 					})
 						.then(function (task) {
 							if (task) {
@@ -103,10 +126,10 @@ const TaskList = () => {
 						})
 						.catch(function (error) {
 							console.error(
-								`Error occurred when completing task: ${error.message}`
+								`Error occurred when completing task: ${error.statusText}`
 							);
 							alert(
-								`Error occurred completing task: ${error.message}`
+								`Error occurred completing task: ${error.statusText}`
 							);
 						});
 				} else {
@@ -165,6 +188,7 @@ const TaskList = () => {
 			headerArrow.addClass("bi bi-arrow-down");
 		}
 	};
+	// #endregion
 
 	return (
 		<div className="card m-1">
@@ -178,7 +202,7 @@ const TaskList = () => {
 				>
 					Create New <i className="bi bi-plus"></i>
 				</button>
-				<table className="table mt-2">
+				<table className="table table-responsive table-hover mt-2">
 					<thead>
 						<tr>
 							<th scope="col">{/* Actions... */}</th>
@@ -220,18 +244,16 @@ const TaskList = () => {
 							<Task
 								key={"task" + task.id}
 								task={task}
-								onSaveHandler={addTask}
-								onCompleteHandler={completeTask}
-								onDeleteHandler={deleteTask}
+								editTask={editTask}
+								completeTask={completeTask}
+								deleteTask={deleteTask}
 							/>
 						))}
 					</tbody>
 				</table>
-				<TaskModal
-					modalId={"createTaskModal"}
-					action={"Create"}
-					task={{ ...newTask, id: tasks.length }}
-					onSaveHandler={addTask}
+				<CreateTaskModal
+					newTask={{ ...newTask, id: tasks.length }}
+					addTask={addTask}
 				/>
 			</div>
 		</div>

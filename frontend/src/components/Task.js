@@ -1,6 +1,4 @@
-import TaskModal from "./TaskModal";
-
-const Task = ({ task, onSaveHandler, onCompleteHandler, onDeleteHandler }) => {
+const Task = ({ task, editTask, completeTask, deleteTask }) => {
 	return (
 		<tr>
 			<td>
@@ -15,7 +13,7 @@ const Task = ({ task, onSaveHandler, onCompleteHandler, onDeleteHandler }) => {
 				<button
 					type="button"
 					className="btn btn-success btn-sm mr-1"
-					onClick={() => onCompleteHandler(task.id)}
+					onClick={() => completeTask(task.id)}
 				>
 					Mark as{" "}
 					{task.status === "Complete" ? "Incomplete" : "Complete"}
@@ -23,7 +21,7 @@ const Task = ({ task, onSaveHandler, onCompleteHandler, onDeleteHandler }) => {
 				<button
 					type="button"
 					className="btn btn-danger btn-sm mr-1"
-					onClick={() => onDeleteHandler(task.id)}
+					onClick={() => deleteTask(task.id)}
 				>
 					Delete
 				</button>
@@ -37,14 +35,6 @@ const Task = ({ task, onSaveHandler, onCompleteHandler, onDeleteHandler }) => {
 			</td>
 			<td>{task.description}</td>
 			<td>{task.isComplete ? "Complete" : "Incomplete"}</td>
-			<td>
-				<TaskModal
-					modalId={"editTaskModal"}
-					action={"Edit"}
-					task={task}
-					onSaveHandler={onSaveHandler}
-				/>
-			</td>
 		</tr>
 	);
 };
