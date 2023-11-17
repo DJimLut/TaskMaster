@@ -13,6 +13,13 @@ const TaskList = () => {
 			dueDate: new Date(Date.now()),
 			isComplete: false,
 		},
+		{
+			id: 1,
+			title: "Example",
+			description: "Exmaple Task",
+			dueDate: new Date(Date.now() + 1),
+			isComplete: true,
+		},
 	]);
 	const [newTask, setNewTask] = useState({
 		id: tasks.length,
@@ -170,23 +177,8 @@ const TaskList = () => {
 			});
 	};
 
-	const sort = (header) => {
-		const allArrows = $(".sortHeader i");
-		const headerArrow = header.find("i");
-
-		// TODO: Implement sorting function
-
-		// if this header already has an arrow, toggle it to flip it
-		if (
-			headerArrow.hasClass("bi-arrow-down") ||
-			headerArrow.hasClass("bi-arrow-up")
-		)
-			headerArrow.toggleClass("bi-arrow-down bi-arrow-up");
-		else {
-			// remove any other arrows and add a descending arrow to the header
-			allArrows.removeClass();
-			headerArrow.addClass("bi bi-arrow-down");
-		}
+	const sort = (headerArr) => {
+		return;
 	};
 	// #endregion
 
@@ -202,12 +194,11 @@ const TaskList = () => {
 				>
 					Create New <i className="bi bi-plus"></i>
 				</button>
-				<table className="table table-responsive table-hover mt-2">
+				<table className="table table-responsive table-hover mt-2 col-12">
 					<thead>
 						<tr>
 							<th scope="col">{/* Actions... */}</th>
 							<th
-								className="sortHeader"
 								scope="col"
 								onClick={() =>
 									sort($('th.sortHeader:contains("Title")'))
@@ -216,7 +207,6 @@ const TaskList = () => {
 								Title<i className=""></i>
 							</th>
 							<th
-								className="sortHeader"
 								scope="col"
 								onClick={() =>
 									sort(
@@ -229,7 +219,6 @@ const TaskList = () => {
 								Description<i className=""></i>
 							</th>
 							<th
-								className="sortHeader"
 								scope="col"
 								onClick={() =>
 									sort($('th.sortHeader:contains("Status")'))
