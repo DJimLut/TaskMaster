@@ -28,23 +28,23 @@ const TaskList = () => {
 		dueDate: new Date(Date.now()),
 		isComplete: false,
 	});
-	// useEffect(() => {
-	// 	$.get("/api/v1/tasks")
-	// 		.then(function (tasks) {
-	// 			if (tasks) {
-	// 				setTasks(tasks);
-	// 			} else {
-	// 				console.log("No tasks returned from server");
-	// 				alert("No Tasks returned from server");
-	// 			}
-	// 		})
-	// 		.catch(function (error) {
-	// 			console.error(
-	// 				`An error occured fetching tasks: ${error.message}`
-	// 			);
-	// 			alert(`An error occured fetching tasks: ${error.message}`);
-	// 		});
-	// }, []);
+	useEffect(() => {
+		$.get("/api/v1/tasks")
+			.then(function (tasks) {
+				if (tasks && typeof(tasks) === typeof([])) {
+					setTasks(tasks);
+				} else {
+					console.log("No tasks returned from server");
+					alert("No Tasks returned from server");
+				}
+			})
+			.catch(function (error) {
+				console.error(
+					`An error occured fetching tasks: ${error.message}`
+				);
+				alert(`An error occured fetching tasks: ${error.message}`);
+			});
+	}, []);
 
 	// #region functions
 	const addTask = () => {
