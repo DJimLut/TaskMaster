@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// creates new document schema in MongoDb
 const taskSchema = new mongoose.Schema({
 	id: Number,
 	title: String,
