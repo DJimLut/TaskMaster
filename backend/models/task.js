@@ -1,8 +1,7 @@
-const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema({
-	_id: ObjectId,
+	id: Number,
 	title: String,
 	description: String,
 	dueDate: { type: Date, default: Date.now() },
