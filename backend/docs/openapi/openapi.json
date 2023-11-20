@@ -15,8 +15,16 @@
   },
   "servers": [
     {
-      "url": "https://{domain}:{port}/api/{version}",
+      "url": "{protocol}://{domain}:{port}/api/{version}",
       "variables": {
+        "protocol": {
+          "default": "http",
+          "enum": [
+            "http",
+            "https"
+          ],
+          "description": "the protocol"
+        },
         "domain": {
           "default": "localhost",
           "enum": [
@@ -25,9 +33,9 @@
           "description": "the domain"
         },
         "port": {
-          "default": "3000",
+          "default": "5000",
           "enum": [
-            "3000"
+            "5000"
           ],
           "description": "the port"
         },
@@ -195,6 +203,16 @@
             }
           }
         ],
+        "requestBody": {
+          "description": "Update a Task",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Task"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successful Operation",

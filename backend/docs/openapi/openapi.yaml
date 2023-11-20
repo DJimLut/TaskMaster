@@ -1,222 +1,234 @@
 openapi: 3.0.3
 info:
-  title: Swagger TaskMasterAPI - OpenAPI 3.0
-  version: 0.1.0
-  description: This is an API for communicating with the TaskMaster database
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+    title: Swagger TaskMasterAPI - OpenAPI 3.0
+    version: 0.1.0
+    description: This is an API for communicating with the TaskMaster database
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
 externalDocs:
-  description: Find out more about Swagger
-  url: http://swagger.io
+    description: Find out more about Swagger
+    url: http://swagger.io
 servers:
-  - url: https://{domain}:{port}/api/{version}
-    variables:
-      domain:
-        default: localhost
-        enum:
-          - localhost
-        description: the domain
-      port:
-        default: '3000'
-        enum:
-          - '3000'
-        description: the port
-      version:
-        default: v1
-        enum:
-          - v1
-        description: the API version
-    description: TaskMaster API
+    - url: "{protocol}://{domain}:{port}/api/{version}"
+      variables:
+          protocol:
+              default: http
+              enum:
+                  - http
+                  - https
+              description: the protocol
+          domain:
+              default: localhost
+              enum:
+                  - localhost
+              description: the domain
+          port:
+              default: "5000"
+              enum:
+                  - "5000"
+              description: the port
+          version:
+              default: v1
+              enum:
+                  - v1
+              description: the API version
+      description: TaskMaster API
 tags:
-  - name: tasks
-    description: The Tasks Table
+    - name: tasks
+      description: The Tasks Table
 paths:
-  /tasks:
-    summary: Tasks
-    description: The Tasks Table
-    post:
-      summary: Create a Task
-      description: Create a Task
-      operationId: createTask
-      requestBody:
-        description: Create a Task
-        content:
-          application/json:
-            schema: 
-              $ref: '#/components/schemas/Task'
-      responses:
-        '201':
-          description: Task was created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-        '400':
-          description: Creation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - tasks
-    get:
-      summary: Get all tasks
-      description: Get all tasks
-      operationId: getTasks
-      responses:
-        '200':
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Task'
-        '500':
-          description: Something really bad happened
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - tasks
-  /tasks/{taskId}:
-    get:
-      summary: Find a Task
-      description: Find a Task
-      operationId: findTask
-      parameters:
-        - name: taskId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-            example: 1
-      responses:
-        '200':
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-        '400':
-          description: Fetch Failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - tasks
-    patch:
-      summary: Update a task
-      description: Update a task
-      operationId: updateTask
-      parameters:
-        - name: taskId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-            example: 1
-      responses:
-        '200':
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-        '400':
-          description: Invalid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Not found
-          content:
-            application/json:
-              schema:
-                type: object
-      tags:
-        - tasks
-    delete:
-      summary: Delete a Task
-      description: Delete a Task
-      operationId: deleteTask
-      parameters:
-        - name: taskId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-            example: 1
-      responses:
-        '200':
-          description: Successful Operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-        '404':
-          description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Something really bad happened
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      tags:
-        - tasks
+    /tasks:
+        summary: Tasks
+        description: The Tasks Table
+        post:
+            summary: Create a Task
+            description: Create a Task
+            operationId: createTask
+            requestBody:
+                description: Create a Task
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Task"
+            responses:
+                "201":
+                    description: Task was created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Task"
+                "400":
+                    description: Creation failed
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+            tags:
+                - tasks
+        get:
+            summary: Get all tasks
+            description: Get all tasks
+            operationId: getTasks
+            responses:
+                "200":
+                    description: Successful Operation
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Task"
+                "500":
+                    description: Something really bad happened
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+            tags:
+                - tasks
+    /tasks/{taskId}:
+        get:
+            summary: Find a Task
+            description: Find a Task
+            operationId: findTask
+            parameters:
+                - name: taskId
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                      format: int32
+                      example: 1
+            responses:
+                "200":
+                    description: Successful Operation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Task"
+                "400":
+                    description: Fetch Failed
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                "404":
+                    description: Not Found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+            tags:
+                - tasks
+        patch:
+            summary: Update a task
+            description: Update a task
+            operationId: updateTask
+            parameters:
+                - name: taskId
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                      format: int32
+                      example: 1
+            requestBody:
+                description: Update a Task
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Task"
+            responses:
+                "200":
+                    description: Successful Operation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Task"
+                "400":
+                    description: Invalid
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                "404":
+                    description: Not found
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+            tags:
+                - tasks
+        delete:
+            summary: Delete a Task
+            description: Delete a Task
+            operationId: deleteTask
+            parameters:
+                - name: taskId
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                      format: int32
+                      example: 1
+            responses:
+                "200":
+                    description: Successful Operation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Task"
+                "404":
+                    description: Not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                "500":
+                    description: Something really bad happened
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+            tags:
+                - tasks
 components:
-  schemas:
-    Task:
-      required:
-        - title
-        - description
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-          example: 1
-        title:
-          type: string
-          example: Example
-        description:
-          type: string
-          example: This is an Example Task
-        dueDate:
-          type: string
-          format: date-time
-        isComplete:
-          type: boolean
-          example: false
-      xml:
-        name: task
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-          example: Example error message
-      xml:
-        name: error
-  securitySchemes:
-    x-api-key:
-      type: apiKey
-      name: x-api-key
-      in: header
+    schemas:
+        Task:
+            required:
+                - title
+                - description
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int32
+                    example: 1
+                title:
+                    type: string
+                    example: Example
+                description:
+                    type: string
+                    example: This is an Example Task
+                dueDate:
+                    type: string
+                    format: date-time
+                isComplete:
+                    type: boolean
+                    example: false
+            xml:
+                name: task
+        Error:
+            type: object
+            properties:
+                error:
+                    type: string
+                    example: Example error message
+            xml:
+                name: error
+    securitySchemes:
+        x-api-key:
+            type: apiKey
+            name: x-api-key
+            in: header
