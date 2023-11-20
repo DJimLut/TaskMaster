@@ -1,12 +1,14 @@
 const express = require("express");
-const router = express.Router();
 const Task = require("../models/task");
+
+const router = express.Router();
 
 // #region v1
 
 // Create a new task
 router.post("/v1/tasks", async (req, res) => {
 	const task = new Task(req.body);
+	debugger;
 	await task
 		.save()
 		.then(function () {
@@ -19,6 +21,7 @@ router.post("/v1/tasks", async (req, res) => {
 
 // Get all tasks
 router.get("/v1/tasks", async (req, res) => {
+	debugger;
 	await Task.find()
 		.then(function (tasks) {
 			res.status(200).json(tasks);
@@ -33,7 +36,7 @@ router.get("/v1/tasks/:id", async (req, res) => {
 	if (isNaN(id)) {
 		res.status(400).json({ error: "Invalid id" });
 	} else {
-		await Task.findById(req.params.id)
+		await Task.findOne({ id: req.params.id })
 			.then(function (task) {
 				if (!task) {
 					res.status(404).json({ error: "Task not found." });
@@ -51,7 +54,13 @@ router.get("/v1/tasks/:id", async (req, res) => {
 router.patch("/v1/tasks/:id", async (req, res) => {
 	const id = Number(req.params.id);
 	const updates = Object.keys(req.body);
-	const allowedUpdates = ["title", "description", "dueDate", "isComplete"];
+	const allowedUpdates = [
+		"id",
+		"title",
+		"description",
+		"dueDate",
+		"isComplete",
+	];
 	const isValidOperation = updates.every((update) =>
 		allowedUpdates.includes(update)
 	);
@@ -64,7 +73,7 @@ router.patch("/v1/tasks/:id", async (req, res) => {
 		return res.status(400).json({ error: "Invalid Id!" });
 	}
 
-	await Task.findByIdAndUpdate(req.params.id, req.body, {
+	await Task.findOneAndUpdate({ id: req.params.id }, req.body, {
 		new: true,
 		runValidators: true,
 	})
@@ -81,7 +90,7 @@ router.patch("/v1/tasks/:id", async (req, res) => {
 
 // Delete a task by ID
 router.delete("/v1/tasks/:id", async (req, res) => {
-	await Task.findByIdAndDelete(req.params.id)
+	await Task.findOneAndDelete({ id: req.params.id })
 		.then(function (task) {
 			if (!task) {
 				return res.status(404).json();
