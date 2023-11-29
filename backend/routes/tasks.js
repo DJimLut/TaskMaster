@@ -113,14 +113,14 @@ router.patch("/v1/tasks/:id", async (req, res) => {
 // Delete a task by ID
 router.delete("/v1/tasks/:id", async (req, res) => {
 	// pass in id parameter to Number constructor
-	const id = Number(req.param.id);
+	const id = Number(req.params.id);
 
 	if (isNaN(id)) {
 		// if Id not a number return invalid Id
 		return res.status(400).json({ error: "Invalid Id!" });
 	} else {
 		// find task and delete from db
-		await Task.findOneAndDelete({ id: req.params.id })
+		await Task.findOneAndDelete({ id })
 			.then(function (task) {
 				if (!task) {
 					// if task is null return not found
