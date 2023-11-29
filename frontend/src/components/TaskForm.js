@@ -4,7 +4,7 @@ const formatDate = (date) => {
 		.slice(0, -5);
 };
 
-const CreateTaskForm = ({ task }) => {
+const TaskForm = ({ title, description, dueDate, isComplete }) => {
 	return (
 		<form className="taskForm">
 			<div className="form-group">
@@ -15,10 +15,10 @@ const CreateTaskForm = ({ task }) => {
 					id="createTaskTitle"
 					name="title"
 					type="text"
-					value={task.title}
+					value={title.get}
 					className="form-control"
 					onChange={(e) => {
-						task.title = e.target.value;
+						title.set(e.target.value);
 					}}
 				/>
 			</div>
@@ -27,12 +27,12 @@ const CreateTaskForm = ({ task }) => {
 					Description
 				</label>
 				<textarea
-					id="createTaskDescripton"
+					id="createTaskDescription"
 					name="description"
-					value={task.description}
+					value={description.get}
 					className="form-control"
 					onChange={(e) => {
-						task.description = e.target.value;
+						description.set(e.target.value);
 					}}
 				></textarea>
 			</div>
@@ -44,10 +44,10 @@ const CreateTaskForm = ({ task }) => {
 					id="createTaskDueDate"
 					name="dueDate"
 					type="datetime-local"
-					value={formatDate(task.dueDate)}
+					value={formatDate(dueDate.get)}
 					className="form-control"
 					onChange={(e) => {
-						task.dueDate = new Date(e.target.value);
+						dueDate.set(new Date(e.target.value));
 					}}
 				/>
 			</div>
@@ -56,10 +56,10 @@ const CreateTaskForm = ({ task }) => {
 					id="createTaskIsComplete"
 					name="isComplete"
 					type="checkbox"
-					checked={task.isComplete}
+					checked={isComplete.get}
 					className="form-check-input"
 					onChange={(e) => {
-						task.isComplete = e.target.checked;
+						isComplete.set(e.target.checked);
 					}}
 				/>
 				<label
@@ -73,4 +73,4 @@ const CreateTaskForm = ({ task }) => {
 	);
 };
 
-export default CreateTaskForm;
+export default TaskForm;

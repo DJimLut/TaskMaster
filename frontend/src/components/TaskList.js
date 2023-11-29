@@ -3,39 +3,25 @@ import CreateTaskModal from "./CreateTaskModal.js";
 
 import React, { useEffect, useState } from "react";
 import $ from "jquery";
+import axios from "axios";
 
 const TaskList = () => {
-	const [tasks, setTasks] = useState([
-		{
-			id: 0,
-			title: "",
-			description: "",
-			dueDate: new Date(Date.now()),
-			isComplete: false,
-		},
-		{
-			id: 1,
-			title: "Example",
-			description: "Exmaple Task",
-			dueDate: new Date(Date.now() + 1),
-			isComplete: true,
-		},
-	]);
-	const [newTask, setNewTask] = useState({
-		id: tasks.length,
-		title: "",
-		description: "",
-		dueDate: new Date(Date.now()),
-		isComplete: false,
-	});
+	// #region constants
+	const SERVER_URL = "http://localhost:5000";
+	const VERSION = "v1";
+	const [tasks, setTasks] = useState([]);
+
 	useEffect(() => {
-		$.get("/api/v1/tasks")
+		$.get(`${SERVER_URL}/api/${VERSION}/tasks`)
 			.then(function (tasks) {
-				if (tasks && typeof(tasks) === typeof([])) {
-					setTasks(tasks);
+				if (tasks && typeof tasks === typeof [] && tasks.length > 0) {
+					setTasks(
+						tasks.map((task) => {
+							return { ...task, dueDate: new Date(task.dueDate) };
+						})
+					);
 				} else {
-					console.log("No tasks returned from server");
-					alert("No Tasks returned from server");
+					console.info("No tasks returned from server");
 				}
 			})
 			.catch(function (error) {
@@ -45,39 +31,46 @@ const TaskList = () => {
 				alert(`An error occured fetching tasks: ${error.message}`);
 			});
 	}, []);
+	// #endregion
 
 	// #region functions
-	const addTask = () => {
-		const taskExists = (element, index, array) => {
-			return element.id === newTask.id;
-		};
-
-		if (tasks.some(taskExists))
-			// task is already in tasks
-			editTask(newTask);
-		else {
-			// add the new task
-			$.post("/api/v1/tasks", newTask)
-				.then(function (createdTask) {
-					if (createdTask) {
-						tasks.push(createdTask);
-						setNewTask({});
-					} else {
-						console.info("Server returned null when creating task");
-						alert("Server returned null when creating task.");
-					}
-				})
-				.catch(function (error) {
-					console.error(`Failed creating task: ${error.message}`);
-					alert(`Failed creating task: ${error.message}`);
-				});
-		}
+	const addTask = (newTask) => {
+		// add the new task
+		axios
+			.post(`${SERVER_URL}/api/${VERSION}/tasks`, {
+				...newTask,
+				id: tasks.length,
+			})
+			.then(function (createdTask) {
+				if (createdTask.data) {
+					createdTask = createdTask.data;
+					setTasks([
+						...tasks,
+						{
+							...createdTask,
+							dueDate: new Date(createdTask.dueDate),
+						},
+					]);
+				} else {
+					console.info("Server returned null when creating task");
+					alert("Server returned null when creating task.");
+				}
+			})
+			.catch(function (error) {
+				console.error(`Failed creating task: ${error.message}`);
+				alert(`Failed creating task: ${error.message}`);
+			});
 	};
 
-	const editTask = (taskToEdit) => {
-		$.patch(`/api/v1/tasks/${taskToEdit.id}`, taskToEdit)
+	const editTask = (editedTask) => {
+		axios
+			.patch(
+				`${SERVER_URL}/api/${VERSION}/tasks/${editedTask.id}`,
+				editedTask
+			)
 			.then(function (editedTask) {
-				if (editedTask) {
+				if (editedTask.data) {
+					editedTask = editedTask.data;
 					const newTasks = tasks.map((task) => {
 						if (task.id === editedTask.id) return editedTask;
 						else {
@@ -100,16 +93,15 @@ const TaskList = () => {
 	};
 
 	const completeTask = (taskId) => {
-		$.get(`/api/v1/tasks/${taskId}`)
+		axios
+			.get(`${SERVER_URL}/api/${VERSION}/tasks/${taskId}`)
 			.then(function (task) {
-				if (task) {
-					$.ajax({
-						method: "PATCH",
-						url: `/api/v1/tasks/${taskId}`,
-						data: {
+				if (task.data) {
+					task = task.data;
+					axios
+						.patch(`${SERVER_URL}/api/${VERSION}/tasks/${taskId}`, {
 							isComplete: !task.isComplete,
-						},
-					})
+						})
 						.then(function (task) {
 							if (task) {
 								const newTasks = tasks.map((task) => {
@@ -157,12 +149,10 @@ const TaskList = () => {
 	};
 
 	const deleteTask = (taskId) => {
-		$.ajax({
-			method: "DELETE",
-			url: `/api/v1/tasks/${taskId}`,
-		})
+		axios
+			.delete(`${SERVER_URL}/api/${VERSION}/tasks/${taskId}`)
 			.then(function (task) {
-				if (task) {
+				if (task.data) {
 					const newTasks = tasks.filter((task) => task.id !== taskId);
 
 					setTasks(newTasks);
@@ -194,7 +184,7 @@ const TaskList = () => {
 				>
 					Create New <i className="bi bi-plus"></i>
 				</button>
-				<table className="table table-responsive table-hover mt-2 col-12">
+				<table className="table table-responsive-sm table-hover mt-2">
 					<thead>
 						<tr>
 							<th scope="col">{/* Actions... */}</th>
@@ -240,10 +230,7 @@ const TaskList = () => {
 						))}
 					</tbody>
 				</table>
-				<CreateTaskModal
-					newTask={{ ...newTask, id: tasks.length }}
-					addTask={addTask}
-				/>
+				<CreateTaskModal addTask={addTask} />
 			</div>
 		</div>
 	);
