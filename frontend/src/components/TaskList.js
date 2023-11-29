@@ -166,10 +166,6 @@ const TaskList = () => {
 				alert(`Error occured deleting task: ${error.message}`);
 			});
 	};
-
-	const sort = (headerArr) => {
-		return;
-	};
 	// #endregion
 
 	return (
@@ -188,32 +184,13 @@ const TaskList = () => {
 					<thead>
 						<tr>
 							<th scope="col">{/* Actions... */}</th>
-							<th
-								scope="col"
-								onClick={() =>
-									sort($('th.sortHeader:contains("Title")'))
-								}
-							>
+							<th id="titleHeader" scope="col">
 								Title<i className=""></i>
 							</th>
-							<th
-								scope="col"
-								onClick={() =>
-									sort(
-										$(
-											'th.sortHeader:contains("Description")'
-										)
-									)
-								}
-							>
+							<th scope="col">
 								Description<i className=""></i>
 							</th>
-							<th
-								scope="col"
-								onClick={() =>
-									sort($('th.sortHeader:contains("Status")'))
-								}
-							>
+							<th scope="col">
 								Status<i className=""></i>
 							</th>
 						</tr>
