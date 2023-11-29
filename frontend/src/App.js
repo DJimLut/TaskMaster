@@ -5,7 +5,7 @@ import TaskList from "./components/TaskList.js";
 
 function App() {
 	return (
-		<div className="text-bg-light">
+		<div className="container-fluid text-bg-light">
 			<Header />
 			<TaskList />
 		</div>
