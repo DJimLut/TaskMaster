@@ -16,10 +16,10 @@ const EditTaskModal = ({ task, editTask }) => {
 			isComplete,
 		};
 
-		setTitle(task.title);
-		setDescription(task.description);
-		setDueDate(new Date(task.dueDate));
-		setIsComplete(task.isComplete);
+		setTitle(editedTask.title);
+		setDescription(editedTask.description);
+		setDueDate(new Date(editedTask.dueDate));
+		setIsComplete(editedTask.isComplete);
 
 		editTask(editedTask);
 	};

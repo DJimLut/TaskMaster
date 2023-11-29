@@ -72,7 +72,11 @@ const TaskList = () => {
 				if (editedTask.data) {
 					editedTask = editedTask.data;
 					const newTasks = tasks.map((task) => {
-						if (task.id === editedTask.id) return editedTask;
+						if (task.id === editedTask.id)
+							return {
+								...editedTask,
+								dueDate: new Date(editedTask.dueDate),
+							};
 						else {
 							return task;
 						}
