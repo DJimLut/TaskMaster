@@ -16,7 +16,7 @@ const specs = swaggerJsDoc(options); // creates a SwaggerUI specification to rea
 
 // Connect to MongoDB
 mongoose.connect(
-	"mongodb+srv://service:srvAccPass@taskmastercluster.ct5wrv1.mongodb.net/?retryWrites=true&w=majority"
+	"your-key-here"
 );
 
 // Middleware setup
